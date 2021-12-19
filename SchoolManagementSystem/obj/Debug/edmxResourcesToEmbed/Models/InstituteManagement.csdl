@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="InstituteManagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="CourseMaster">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+  </EntityType>
+  <EntityContainer Name="InstituteManagementEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="CourseMasters" EntityType="Self.CourseMaster" />
+    <EntitySet Name="PaymodeMasters" EntityType="InstituteManagementModel.PaymodeMaster" />
+    <EntitySet Name="cities" EntityType="InstituteManagementModel.city" />
+    <EntitySet Name="countries" EntityType="InstituteManagementModel.country" />
+    <EntitySet Name="states" EntityType="InstituteManagementModel.state" />
+    <AssociationSet Name="FK_cities_states" Association="InstituteManagementModel.FK_cities_states">
+      <End Role="state" EntitySet="states" />
+      <End Role="city" EntitySet="cities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_states_countries" Association="InstituteManagementModel.FK_states_countries">
+      <End Role="country" EntitySet="countries" />
+      <End Role="state" EntitySet="states" />
+    </AssociationSet>
+    <EntitySet Name="UserMasters" EntityType="InstituteManagementModel.UserMaster" />
+    <EntitySet Name="StudentMasters" EntityType="InstituteManagementModel.StudentMaster" />
+    <AssociationSet Name="FK_StudentMaster_cities" Association="InstituteManagementModel.FK_StudentMaster_cities">
+      <End Role="city" EntitySet="cities" />
+      <End Role="StudentMaster" EntitySet="StudentMasters" />
+    </AssociationSet>
+    <AssociationSet Name="FK_StudentMaster_countries" Association="InstituteManagementModel.FK_StudentMaster_countries">
+      <End Role="country" EntitySet="countries" />
+      <End Role="StudentMaster" EntitySet="StudentMasters" />
+    </AssociationSet>
+    <AssociationSet Name="FK_StudentMaster_states" Association="InstituteManagementModel.FK_StudentMaster_states">
+      <End Role="state" EntitySet="states" />
+      <End Role="StudentMaster" EntitySet="StudentMasters" />
+    </AssociationSet>
+    <EntitySet Name="UniversityMasters" EntityType="InstituteManagementModel.UniversityMaster" />
+  </EntityContainer>
+  <EntityType Name="PaymodeMaster">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="city">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="state_id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="state" Relationship="InstituteManagementModel.FK_cities_states" FromRole="city" ToRole="state" />
+    <NavigationProperty Name="StudentMasters" Relationship="InstituteManagementModel.FK_StudentMaster_cities" FromRole="city" ToRole="StudentMaster" />
+  </EntityType>
+  <EntityType Name="country">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="sortname" Type="String" Nullable="false" MaxLength="3" FixedLength="false" Unicode="false" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="false" />
+    <Property Name="phonecode" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="states" Relationship="InstituteManagementModel.FK_states_countries" FromRole="country" ToRole="state" />
+    <NavigationProperty Name="StudentMasters" Relationship="InstituteManagementModel.FK_StudentMaster_countries" FromRole="country" ToRole="StudentMaster" />
+  </EntityType>
+  <EntityType Name="state">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" />
+    <Property Name="name" Type="String" Nullable="false" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="country_id" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="cities" Relationship="InstituteManagementModel.FK_cities_states" FromRole="state" ToRole="city" />
+    <NavigationProperty Name="country" Relationship="InstituteManagementModel.FK_states_countries" FromRole="state" ToRole="country" />
+    <NavigationProperty Name="StudentMasters" Relationship="InstituteManagementModel.FK_StudentMaster_states" FromRole="state" ToRole="StudentMaster" />
+  </EntityType>
+  <Association Name="FK_cities_states">
+    <End Type="InstituteManagementModel.state" Role="state" Multiplicity="1" />
+    <End Type="InstituteManagementModel.city" Role="city" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="state">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="city">
+        <PropertyRef Name="state_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_states_countries">
+    <End Type="InstituteManagementModel.country" Role="country" Multiplicity="1" />
+    <End Type="InstituteManagementModel.state" Role="state" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="country">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="state">
+        <PropertyRef Name="country_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="UserMaster">
+    <Key>
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="UserName" />
+    </Key>
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="FullName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="RoleId" Type="Int32" Nullable="false" />
+    <Property Name="Active" Type="Boolean" />
+  </EntityType>
+  <EntityType Name="StudentMaster">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Mobile" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="CountryId" Type="Int32" />
+    <Property Name="StateId" Type="Int32" />
+    <Property Name="CityId" Type="Int32" />
+    <Property Name="Pin" Type="String" MaxLength="6" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="city" Relationship="InstituteManagementModel.FK_StudentMaster_cities" FromRole="StudentMaster" ToRole="city" />
+    <NavigationProperty Name="country" Relationship="InstituteManagementModel.FK_StudentMaster_countries" FromRole="StudentMaster" ToRole="country" />
+    <NavigationProperty Name="state" Relationship="InstituteManagementModel.FK_StudentMaster_states" FromRole="StudentMaster" ToRole="state" />
+  </EntityType>
+  <Association Name="FK_StudentMaster_cities">
+    <End Type="InstituteManagementModel.city" Role="city" Multiplicity="0..1" />
+    <End Type="InstituteManagementModel.StudentMaster" Role="StudentMaster" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="city">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="StudentMaster">
+        <PropertyRef Name="CityId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_StudentMaster_countries">
+    <End Type="InstituteManagementModel.country" Role="country" Multiplicity="0..1" />
+    <End Type="InstituteManagementModel.StudentMaster" Role="StudentMaster" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="country">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="StudentMaster">
+        <PropertyRef Name="CountryId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_StudentMaster_states">
+    <End Type="InstituteManagementModel.state" Role="state" Multiplicity="0..1" />
+    <End Type="InstituteManagementModel.StudentMaster" Role="StudentMaster" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="state">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="StudentMaster">
+        <PropertyRef Name="StateId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityType Name="UniversityMaster">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+</Schema>
